@@ -2,7 +2,7 @@ import pymysql
 import random
 import time
 
-from .ProcessOn项目 import main
+from ProcessOn项目 import main
 
 
 def controler_main():
