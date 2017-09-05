@@ -2,7 +2,7 @@ import pymysql
 import random
 import time
 
-from 一些项目.Processon.ProcessOn项目 import main
+from .ProcessOn项目 import main
 
 
 def controler_main():
@@ -50,3 +50,5 @@ if __name__=='__main__':
     while True:
         controler_main()
         time.sleep(3600)
+
+        print(time.ctime(),'-------------等待下一轮执行----------------------------------')

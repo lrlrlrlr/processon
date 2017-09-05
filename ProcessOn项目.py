@@ -30,9 +30,11 @@ class Processon(object):
     # deflate, br','Accept-Language': 'zh-CN,zh;'}
 
     def sendreq(emailaddr,domain,regurl):
+        make_jsessionid=requests.get(regurl).url.partition('=')[2]
         cookies={
-            'JSESSIONID':requests.get(regurl).url.partition('=')[2]}
-        data='email={}%40{}&pass={}&fullname={}'.format(emailaddr,domain,random.randint(10000000,99999999999),emailaddr)
+            'JSESSIONID':make_jsessionid}
+        data='email={}%40{}&pass={}&fullname={}'.format(emailaddr,domain,random.randint(100000000,99999999999),
+                                                        emailaddr)
         r=requests.post('https://www.processon.com/signup/submit',headers=Processon.headers,cookies=cookies,data=data)
         print('构造注册请求:',BeautifulSoup(r.content,'lxml').p.text)
 
@@ -42,6 +44,10 @@ class Processon(object):
 
 
 class Tenminmail(object):
+    get_cookies=requests.get('http://www.bccto.me').headers.get('Set-Cookie').split('\"')[1]
+    assert type(get_cookies)==str
+
+
     headers={
         'Host':'www.bccto.me',
         'Connection':'keep-alive',
@@ -50,12 +56,10 @@ class Tenminmail(object):
                      'Safari/537.36',
         'Accept':'text/html,application/xhtml+xml,application/xml;',
         'Referer':'http://www.bccto.me/',
-        'Accept-Encoding':'gzip,deflate,sdch',
-        'Accept-Language':'zh-CN,zh;'}
-    #todo 这cookies会过期,得想办法
+        'Accept-Encoding':"gzip, deflate",
+        'Accept-Language':"zh-CN,zh;q=0.8"}
     cookies={
-        'mail':"2|1:0|10:1500362289|4:mail|48:cXBvd2llc2syOUB6eW11eWluZy5jb218MTUwMDM2MjI4OQ"
-               "==|17a307159022f295b258bab9fcf64a6260667ff24d4bb4a398581b50014ca8e5"}
+        'mail':get_cookies}
     maillist=[]
     activeaddr=[]
 
@@ -67,6 +71,8 @@ class Tenminmail(object):
 
     def checkmail(mailaddr,domain):
         for i in range(10):
+            if i==9:
+                raise 'no mail..'
             time.sleep(10)
             print('检查邮箱..',end='')
             try:
