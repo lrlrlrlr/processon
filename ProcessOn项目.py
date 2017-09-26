@@ -177,7 +177,7 @@ def main(succtimes_required,regurl='https://www.processon.com/i/5800a44be4b02e11
 
 
 if __name__=='__main__':
-    main(1,'https://www.processon.com/i/56593b61e4b010dc0fa2b62c')
+    main(5, 'https://www.processon.com/i/58a4106ae4b0669d99390a58')
     # emailaddr=input('email: \n')
     # Processon.sendreq(emailaddr,'zymuying.com','https://www.processon.com/i/56593b61e4b010dc0fa2b62c')
     # url=input('active url')

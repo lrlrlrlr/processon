@@ -39,7 +39,8 @@ def controler_main():
 
             cursor.execute('UPDATE tasklist SET executetime={} WHERE id={};'.format(random_new_time,id))
             cursor.execute('UPDATE tasklist SET balance={} WHERE id={};'.format(new_balance,id))
-
+    else:
+        print('目前没有需要执行的任务!')
     connect.commit()
     cursor.close()
     connect.close()
