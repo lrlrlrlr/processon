@@ -1,3 +1,5 @@
+#!usr/bin/env python3
+# encoding:utf-8
 import random
 import requests
 import time
@@ -177,7 +179,11 @@ def main(succtimes_required,regurl='https://www.processon.com/i/5800a44be4b02e11
 
 
 if __name__=='__main__':
-    main(5, 'https://www.processon.com/i/582144f8e4b01871e7957d89')
+    userinput_url = input('请输入要刷的网址:')
+    userinput_times = input('请输入要刷几次邀请(默认5):')
+    if userinput_times == '':
+        userinput_times = 5
+    main(int(userinput_times), userinput_url)
     # emailaddr=input('email: \n')
     # Processon.sendreq(emailaddr,'zymuying.com','https://www.processon.com/i/56593b61e4b010dc0fa2b62c')
     # url=input('active url')
