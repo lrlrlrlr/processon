@@ -4,6 +4,7 @@ import random
 import requests
 import time
 from bs4 import BeautifulSoup
+from retrying import retry
 
 
 # url='https://www.processon.com/i/592a3d59e4b0265ca26fa549'
@@ -24,17 +25,18 @@ class Processon(object):
         'Accept-Encoding':'gzip, deflate, br',
         'Accept-Language':'zh-CN,zh;q=0.8'}
 
-    # headers={'Host': 'www.processon.com','Connection': 'keep-alive','Content-Length': '66','Cache-Control':
-    # 'max-age=0','Origin': 'https://www.processon.com','Upgrade-Insecure-Requests': '1','User-Agent': 'Mozilla/5.0 (
-    # Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.98 Safari/537.36',
-    # 'Content-Type': 'application/x-www-form-urlencoded','Accept': 'text/html,application/xhtml+xml,
-    # application/xml;q=0.9,image/webp,*/*;','Referer': 'https://www.processon.com/signup','Accept-Encoding': 'gzip,
-    # deflate, br','Accept-Language': 'zh-CN,zh;'}
-
+    @retry(stop_max_attempt_number=3)
     def sendreq(emailaddr,domain,regurl):
-        make_jsessionid=requests.get(regurl).url.partition('=')[2]
+        # 获取邀请的cookies
+        make_jsessionid1 = requests.get(regurl).cookies.get('JSESSIONID')
         cookies={
-            'JSESSIONID':make_jsessionid}
+            'JSESSIONID': make_jsessionid1}
+
+        make_jsessionid2 = requests.get('https://www.processon.com/signup', headers=Processon.headers,
+                                        cookies=cookies).cookies.get('JSESSIONID')
+        cookies = {
+            'JSESSIONID': make_jsessionid2}
+
         data='email={}%40{}&pass={}&fullname={}'.format(emailaddr,domain,random.randint(100000000,99999999999),
                                                         emailaddr)
         r=requests.post('https://www.processon.com/signup/submit',headers=Processon.headers,cookies=cookies,data=data)
@@ -180,9 +182,7 @@ def main(succtimes_required,regurl='https://www.processon.com/i/5800a44be4b02e11
 
 if __name__=='__main__':
     userinput_url = input('请输入要刷的网址:')
-    userinput_times = input('请输入要刷几次邀请(默认5):')
-    if userinput_times == '':
-        userinput_times = 5
+    userinput_times = input('请输入要刷几次邀请(默认5):') or 5
     main(int(userinput_times), userinput_url)
     # emailaddr=input('email: \n')
     # Processon.sendreq(emailaddr,'zymuying.com','https://www.processon.com/i/56593b61e4b010dc0fa2b62c')
