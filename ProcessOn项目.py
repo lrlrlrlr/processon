@@ -25,22 +25,19 @@ class Processon(object):
         'Accept-Encoding':'gzip, deflate, br',
         'Accept-Language':'zh-CN,zh;q=0.8'}
 
-    @retry(stop_max_attempt_number=3)
+    # @retry(stop_max_attempt_number=3)
+    @staticmethod
     def sendreq(emailaddr,domain,regurl):
         # 获取邀请的cookies
-        make_jsessionid1 = requests.get(regurl).cookies.get('JSESSIONID')
-        cookies={
-            'JSESSIONID': make_jsessionid1}
-
-        make_jsessionid2 = requests.get('https://www.processon.com/signup', headers=Processon.headers,
-                                        cookies=cookies).cookies.get('JSESSIONID')
-        cookies = {
-            'JSESSIONID': make_jsessionid2}
+        make_jsessionid = requests.get(regurl).url.split('jsessionid=')[1]
+        assert make_jsessionid
+        cookies = {'JSESSIONID': make_jsessionid}
 
         data='email={}%40{}&pass={}&fullname={}'.format(emailaddr,domain,random.randint(100000000,99999999999),
                                                         emailaddr)
         r=requests.post('https://www.processon.com/signup/submit',headers=Processon.headers,cookies=cookies,data=data)
         print('构造注册请求:',BeautifulSoup(r.content,'lxml').p.text)
+        print(r.cookies, cookies)
 
     def active(activeurl):
         r=requests.get(activeurl)
@@ -184,8 +181,11 @@ if __name__=='__main__':
     userinput_url = input('请输入要刷的网址:')
     userinput_times = input('请输入要刷几次邀请(默认5):') or 5
     main(int(userinput_times), userinput_url)
+
     # emailaddr=input('email: \n')
     # Processon.sendreq(emailaddr,'zymuying.com','https://www.processon.com/i/56593b61e4b010dc0fa2b62c')
     # url=input('active url')
     # Processon.active(url)
+
+    # Processon.sendreq('x69mo1p2','www.bccto.me','https://www.processon.com/i/59f2e689e4b06bed41c92702')
     pass
